@@ -1,11 +1,12 @@
-name: Build Android APK
+
+name: Build Professional Sales App APK
 
 on:
-  workflow_dispatch:
   push:
     paths:
-      - 'SalesManagementApp.zip'
+      - 'SalesManagementApp_Professional_V1.zip'
       - '.github/workflows/build-apk.yml'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -26,14 +27,17 @@ jobs:
         with:
           gradle-version: '8.7'
 
-      - name: Unpack project
+      - name: Extract new project
         run: |
-          unzip -q SalesManagementApp.zip -d source
-          cd source
-          gradle assembleDebug
+          test -f SalesManagementApp_Professional_V1.zip
+          unzip -q SalesManagementApp_Professional_V1.zip -d source
+
+      - name: Build APK
+        run: gradle -p source assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: SalesManagementApp-debug-apk
+          name: Professional-Sales-App
           path: source/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
